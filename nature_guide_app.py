@@ -184,7 +184,7 @@ with tab1:
         st.markdown(f"*{res.get('scientific_name')}* | `{res.get('family')}`")
         
         name_voice = f"이 생물은 {res.get('category')} 분류에 속하는 {res.get('common_name')}입니다. 학명은 {res.get('scientific_name')}입니다."
-        speak_button(name_voice, "🔊 이름 듣기")
+        render_voice_player(name_voice, "🔊 이름 듣기")
 
         # 2단계: 생태 특징 및 유사종 정보 (버튼 토글 / 아코디언)
         with st.expander("🌱 자세한 생태적 특징 및 헷갈리는 유사종 보기", expanded=False):
@@ -192,14 +192,14 @@ with tab1:
             st.markdown(f"**[혼동하기 쉬운 유사종 비교]**\n\n{res.get('similar_species')}")
             
             detail_voice = f"생태적 특징입니다. {res.get('ecology')} 유사종 구별법입니다. {res.get('similar_species')}"
-            speak_button(detail_voice, "🔊 생태/유사종 설명 듣기")
+            render_voice_player(detail_voice, "🔊 생태/유사종 설명 듣기")
 
         # 3단계: 스토리텔링 정보 (버튼 토글 / 아코디언)
         with st.expander("📖 흥미로운 이름의 유래와 스토리텔링 보기", expanded=False):
             st.markdown(f"{res.get('storytelling')}")
             
             story_voice = f"이름에 얽힌 이야기입니다. {res.get('storytelling')}"
-            speak_button(story_voice, "🔊 스토리텔링 듣기")
+            render_voice_player(story_voice, "🔊 스토리텔링 듣기")
 
         # 4단계: 나만의 도감 저장 여부 선택
         st.markdown("---")

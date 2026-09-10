@@ -98,6 +98,7 @@ def render_voice_player(text, label="이 이야기 음성으로 듣기"):
     </div>
     """
     st.components.v1.html(html, height=52)
+    speak_button = render_voice_player
 
 # ==========================================
 # 3. Gemini API 초기화

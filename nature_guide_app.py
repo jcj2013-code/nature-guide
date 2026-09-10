@@ -202,7 +202,7 @@ def render_voice_player(text, label="이 이야기 음성으로 듣기"):
 # ==============================================================================
 # 3. Gemini API 초기화
 # ==============================================================================
-GEMINI_API_KEY = st.secrets.get"AQ.Ab8RN6LWGQ6hcCBcsiPXMcXddnvMaZoG2tNRex9Nx01G9XqmeA"
+GEMINI_API_KEY = st.secrets.get"GEMINI_API_KEY","")
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 if "analysis_result" not in st.session_state:

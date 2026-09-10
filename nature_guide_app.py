@@ -6,6 +6,7 @@ from datetime import datetime
 import streamlit as st
 from google import genai
 from PIL import Image
+from gtts import gTTS
 
 # ==========================================
 # 1. 페이지 설정 및 디자인 (모바일 화면 최적화)
@@ -63,21 +64,19 @@ def image_to_base64(img):
     return base64.b64encode(buffered.getvalue()).decode('utf-8')
 
 # 스마트폰 내장 브라우저 한국어 음성 재생(TTS) 자바스크립트 컴포넌트
-def speak_button(text, button_label="🔊 음성으로 듣기"):
-    safe_text = json.dumps(text)
-    html_code = f"""
-    <div style="margin: 8px 0;">
-        <button onclick='window.speechSynthesis.cancel(); var msg = new SpeechSynthesisUtterance({safe_text}); msg.lang = "ko-KR"; msg.rate = 0.95; window.speechSynthesis.speak(msg);' 
-                style="background-color: #2e7d32; color: white; border: none; border-radius: 8px; padding: 8px 14px; font-size: 14px; cursor: pointer;">
-            {button_label}
-        </button>
-        <button onclick='window.speechSynthesis.cancel();' 
-                style="background-color: #757575; color: white; border: none; border-radius: 8px; padding: 8px 14px; font-size: 14px; cursor: pointer; margin-left: 5px;">
-            ⏹ 정지
-        </button>
-    </div>
-    """
-    st.components.v1.html(html_code, height=45)
+def render_voice_player(text, label="이 이야기 음성으로 듣기"):
+    """안드로이드/아이폰 완벽 호환 gTTS 음성 플레이어"""
+    try:
+        # 긴 설명 중 특수문자나 괄호 정리
+        clean_text = text.replace("*", "").replace("#", "")
+        tts = gTTS(text=clean_text, lang='ko')
+        audio_buffer = BytesIO()
+        tts.write_to_fp(audio_buffer)
+        audio_buffer.seek(0)
+        st.caption(f"🔊 {label}")
+        st.audio(audio_buffer, format='audio/mp3')
+    except Exception as e:
+        st.caption(f"⚠️ 음성 생성 중 오류: {e}")
 
 # ==========================================
 # 3. Gemini API 초기화

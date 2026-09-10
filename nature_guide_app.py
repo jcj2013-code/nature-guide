@@ -65,18 +65,39 @@ def image_to_base64(img):
 
 # 스마트폰 내장 브라우저 한국어 음성 재생(TTS) 자바스크립트 컴포넌트
 def render_voice_player(text, label="이 이야기 음성으로 듣기"):
-    """안드로이드/아이폰 완벽 호환 gTTS 음성 플레이어"""
-    try:
-        # 긴 설명 중 특수문자나 괄호 정리
-        clean_text = text.replace("*", "").replace("#", "")
-        tts = gTTS(text=clean_text, lang='ko')
-        audio_buffer = BytesIO()
-        tts.write_to_fp(audio_buffer)
-        audio_buffer.seek(0)
-        st.caption(f"🔊 {label}")
-        st.audio(audio_buffer, format='audio/mp3')
-    except Exception as e:
-        st.caption(f"⚠️ 음성 생성 중 오류: {e}")
+    """줄바꿈과 특수문자를 완벽 제거한 웹 음성 플레이어"""
+    # 따옴표, 줄바꿈, 특수기호로 인한 자바스크립트 문법 에러 원천 차단
+    clean_text = (
+        str(text)
+        .replace("\n", " ")
+        .replace("\r", " ")
+        .replace("'", " ")
+        .replace('"', " ")
+        .replace("*", "")
+        .replace("#", "")
+        .strip()
+    )
+    safe_text = json.dumps(clean_text, ensure_ascii=False)
+    
+    html = f"""
+    <div style="display:flex; align-items:center; gap:8px; margin: 10px 0 16px 0;">
+        <button onclick='
+            window.speechSynthesis.cancel();
+            var text = {safe_text};
+            var msg = new SpeechSynthesisUtterance(text);
+            msg.lang = "ko-KR";
+            msg.rate = 0.95;
+            window.speechSynthesis.speak(msg);
+        ' style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; background-color: #2D5A27; color: white; border: none; border-radius: 30px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 3px 8px rgba(45,90,39,0.2);">
+            <span>🔊</span> {label}
+        </button>
+        <button onclick='window.speechSynthesis.cancel();' 
+                style="display:flex; align-items:center; justify-content:center; background-color: #F3F4F6; color: #4B5563; border: 1px solid #E5E7EB; border-radius: 30px; padding: 10px 14px; font-size: 13px; font-weight: 600; cursor: pointer;">
+            ⏹ 멈춤
+        </button>
+    </div>
+    """
+    st.components.v1.html(html, height=52)
 
 # ==========================================
 # 3. Gemini API 초기화

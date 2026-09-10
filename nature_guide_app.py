@@ -260,5 +260,5 @@ with tab2:
                     st.markdown(f"**스토리텔링:** {item.get('storytelling')}")
                     
                     full_text = f"{item.get('common_name')}. {item.get('ecology')} {item.get('storytelling')}"
-                    speak_button(full_text, f"🔊 전체 이야기 다시 듣기")
+                    render_voice_player(full_text, "🔊 전체 이야기 다시 듣기")
                 st.markdown("---")
